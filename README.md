@@ -1,6 +1,17 @@
 # Kubernetes Setup (In Progress)
 Compute, storage and databases can be expensive on cloud platforms such as AWS, Azure etc. The goal of this setup is to allow anyone deploy kubernetes cluster with following features:
 
+#### Index
+- [Pre-Requisites](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#pre-requisites)
+- [Deploying k8s cluster on hetzner using hetzner-k3s](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#deploying-kubernetes-cluster-on-hetzner-using-hetzner-k3s--self-managed-)
+- [Install Nginx Controller](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#install-nginx-controller-for-ingress)
+- [Install certbot](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#install-certbot-manager-for-automatic-ssl-certs-for-nginx-ingress)
+- [Install ClougnativePG Postgres Operator](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#setup-cloudnativepg-postgres-operator)
+- [Setting up ArgoCD](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#setup-argocd)
+- [Setting up K3s cluster on dedicated GPU node on hetzner](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#setting-up-k3s-cluster-on-hetzner-gpu-dedicated-node)
+- [Deploying GPU operator on dedicated GPU cluster](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#deploying-gpu-operator-on-dedicated-gpu-server)
+- [Expose TCP services on nginx controller](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#how-to-expose-tcp-services-using-nginx-controller-deployed-with-helm)
+
 #### Features
 - About 70-80% cheaper than AWS
 - Deploy elastic clusters which can be resized and expanded easily
