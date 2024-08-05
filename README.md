@@ -55,9 +55,13 @@ curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dear
 REF : https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installing-with-apt
 
 - Configure containerd (docker image runtime) to use nvidia container toolkit using :
+
 ```sudo nvidia-ctk runtime configure --runtime=containerd```
+
 &
+
 ```sudo systemctl restart containerd```
+
 NOTE: This can change based on what docker runtime you have 
 
 - On the GPU dedicated server, install nvidia-smi using :
