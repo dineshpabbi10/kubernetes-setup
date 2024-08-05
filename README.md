@@ -45,9 +45,13 @@ curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dear
     sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
 ```
 &
+
 ```sudo apt-get update```
+
 &
+
 ```sudo apt-get install -y nvidia-container-toolkit```
+
 REF : https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installing-with-apt
 
 - Configure containerd (docker image runtime) to use nvidia container toolkit using :
