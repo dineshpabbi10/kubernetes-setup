@@ -30,7 +30,8 @@ Compute, storage and databases can be expensive on cloud platforms such as AWS, 
 - Specify the instance and region of worker-nodes, master-nodes in cluster.yaml file
 - Generate an ssh file WITHOUT any passphrase (This is important) and specify path of generated ssh files in cluster.yaml file
 - Specify path of kubeconfig file in the cluster.yaml. This file is used to run commands against the k8s cluster later
-- Once done run : `hetzner-k3s create --config cluster_config.yaml`
+- Once done run : 
+```hetzner-k3s create --config cluster_config.yaml```
 - Wait for everything to finish
 
 ### Install nginx controller for ingress
@@ -83,21 +84,29 @@ curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dear
 ```
 &
 
-```sudo apt-get update```
+```
+sudo apt-get update
+```
 
 &
 
-```sudo apt-get install -y nvidia-container-toolkit```
+```
+sudo apt-get install -y nvidia-container-toolkit
+```
 
 REF : https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installing-with-apt
 
 - Configure containerd (docker image runtime) to use nvidia container toolkit using :
 
-```sudo nvidia-ctk runtime configure --runtime=containerd```
+```
+sudo nvidia-ctk runtime configure --runtime=containerd
+```
 
 &
 
-```sudo systemctl restart containerd```
+```
+sudo systemctl restart containerd
+```
 
 NOTE: This can change based on what docker runtime you have 
 
