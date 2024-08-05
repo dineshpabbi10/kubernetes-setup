@@ -11,6 +11,7 @@ Compute, storage and databases can be expensive on cloud platforms such as AWS, 
 - [Setting up K3s cluster on dedicated GPU node on hetzner](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#setting-up-k3s-cluster-on-hetzner-gpu-dedicated-node)
 - [Deploying GPU operator on dedicated GPU cluster](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#deploying-gpu-operator-on-dedicated-gpu-server)
 - [Expose TCP services on nginx controller](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#how-to-expose-tcp-services-using-nginx-controller-deployed-with-helm)
+- [Apply time-slicing for GPU in dedicated GPU node cluster](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#apply-time-slicing-for-gpu-nodes-on-dedicated-gpu-cluster)
 
 #### Features
 - About 70-80% cheaper than AWS
