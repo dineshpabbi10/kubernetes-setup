@@ -202,3 +202,41 @@ kubectl -n ingress-nginx annotate services ingress-nginx-controller \
 ```
 helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --values nginx-values.yaml --namespace ingress-nginx --create-namespace
 ```
+
+### Apply time-slicing for GPU nodes on dedicated gpu cluster
+
+##### What is time-slicing ?
+The NVIDIA GPU Operator enables oversubscription of GPUs through a set of extended options for the NVIDIA Kubernetes Device Plugin. GPU time-slicing enables workloads that are scheduled on oversubscribed GPUs to interleave with one another.
+
+This mechanism for enabling time-slicing of GPUs in Kubernetes enables a system administrator to define a set of replicas for a GPU, each of which can be handed out independently to a pod to run workloads on. Unlike Multi-Instance GPU (MIG), there is no memory or fault-isolation between replicas, but for some workloads this is better than not being able to share at all. Internally, GPU time-slicing is used to multiplex workloads from replicas of the same underlying GPU.
+
+##### Steps
+- create `time-slicing-config.yaml` file with following content:
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: time-slicing-config-all
+data:
+  any: |-
+    version: v1
+    flags:
+      migStrategy: none
+    sharing:
+      timeSlicing:
+        resources:
+        - name: nvidia.com/gpu
+          replicas: 4
+```
+- Make sure gpu-operator namespace exists. Run :
+```
+kubectl create -n gpu-operator -f time-slicing-config.yaml
+```
+- Configure nvidia device plugin to use time-slicing :
+```
+kubectl patch clusterpolicies.nvidia.com/cluster-policy \
+    -n gpu-operator --type merge \
+    -p '{"spec": {"devicePlugin": {"config": {"name": "time-slicing-config-all", "default": "any"}}}}'
+```
+
+Once applied, every gpu will publish 4 GPUs instead of one.
