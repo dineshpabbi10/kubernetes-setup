@@ -12,6 +12,7 @@ Compute, storage and databases can be expensive on cloud platforms such as AWS, 
 ## Pre-Requisites
 - Hetzner cloud account : https://hetzner.cloud/?ref=VDxeuaU6cw7u [ Referral Link ]
 - Install hetzner-k3s : https://github.com/vitobotta/hetzner-k3s
+- Install k3sup cli : https://github.com/alexellis/k3sup
 - A hetzner cloud project ( Click New Project on hetzner cloud dashboard )
 - A hetzner cloud project token (Read and Write)
 1.
@@ -70,6 +71,18 @@ helm install \
   --version v1.15.2 \
   --set crds.enabled=true
 ```
+
+### Setup CloudnativePG (Postgres) operator
+Run :
+```
+helm repo add cnpg https://cloudnative-pg.github.io/charts
+helm upgrade --install cnpg \
+  --namespace cnpg-system \
+  --create-namespace \
+  cnpg/cloudnative-pg
+```
+
+### 
 
 ### Setting up k3s cluster on Hetzner GPU dedicated node
 TO BE WRITTEN LATER
