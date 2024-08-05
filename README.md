@@ -10,7 +10,8 @@ Compute, storage and databases can be expensive on cloud platforms such as AWS, 
 - Automatic provisioning and renewal of SSL certificates for all public facing services
 
 ## Pre-Requisites
-- Hetzner cloud account (https://hetzner.cloud/?ref=VDxeuaU6cw7u) [ Refferal Link ]
+- Hetzner cloud account : https://hetzner.cloud/?ref=VDxeuaU6cw7u [ Referral Link ]
+- Install hetzner-k3s : https://github.com/vitobotta/hetzner-k3s
 - A hetzner cloud project ( Click New Project on hetzner cloud dashboard )
 - A hetzner cloud project token (Read and Write)
 1.
@@ -23,5 +24,9 @@ Compute, storage and databases can be expensive on cloud platforms such as AWS, 
 ![image](https://github.com/user-attachments/assets/5e7899ba-2dc0-49d3-ab9e-9f31ab33affa)
 
 ## Steps
-### Deploying kubernetes cluster on hetzner ( Self Managed )
-- 
+### Deploying kubernetes cluster on hetzner using hetzner-k3s ( Self Managed )
+- Create a cluster.yaml file as shown here : https://github.com/vitobotta/hetzner-k3s?tab=readme-ov-file#creating-a-cluster
+- In cluster.yaml file , replace hetzner-token with the read-write project token
+- Specify the instance and region of worker-nodes, master-nodes in cluster.yaml file
+- Generate an ssh file WITHOUT any passphrase (This is important) and specify path of generated ssh files in cluster.yaml file
+- Once done run : `hetzner-k3s create --config cluster_config.yaml`
