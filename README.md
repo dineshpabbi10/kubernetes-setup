@@ -82,7 +82,11 @@ helm upgrade --install cnpg \
   cnpg/cloudnative-pg
 ```
 
-### 
+### Setup ArgoCD 
+Run :
+```
+kubectl apply -k https://github.com/argoproj/argo-cd/manifests/crds\?ref\=stable
+```
 
 ### Setting up k3s cluster on Hetzner GPU dedicated node
 TO BE WRITTEN LATER
