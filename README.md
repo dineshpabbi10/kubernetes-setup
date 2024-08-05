@@ -71,7 +71,7 @@ sudo add-apt-repository ppa:graphics-drivers/ppa
 sudo apt update
 sudo apt install nvidia-381
 ```
-- Setup Help repo using 
+- Setup Helm repo using 
 ```
 helm repo add nvidia https://helm.ngc.nvidia.com/nvidia \
     && helm repo update
