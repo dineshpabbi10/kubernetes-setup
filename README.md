@@ -89,7 +89,30 @@ kubectl apply -k https://github.com/argoproj/argo-cd/manifests/crds\?ref\=stable
 ```
 
 ### Setting up k3s cluster on Hetzner GPU dedicated node
-TO BE WRITTEN LATER
+- Generate an ssh key without passphrase
+- On GPU node firewall add following rules for incoming traffic :
+![image](https://github.com/user-attachments/assets/0255710d-1c9b-4857-b590-ef6a0865a0f3)
+
+Reference : https://docs.k3s.io/installation/requirements#networking
+
+- Add ssh key for the user root if the dedicated node is setup with a password
+- Run :
+```
+export IP=<IP address of your GPU node>
+k3sup install --ip $IP --user root
+
+# Or use a hostname and SSH key for EC2
+export HOST="ec2-3-250-131-77.eu-west-1.compute.amazonaws.com"
+k3sup install --host $HOST --user ubuntu \
+  --ssh-key $HOME/ec2-key.pem
+```
+
+- Run following commmand to add hetzner cloud controller manager for k8s so k8s cluster can create or remove hetzner cloud resources :
+```
+helm repo add hcloud https://charts.hetzner.cloud
+helm repo update hcloud
+helm install hccm hcloud/hcloud-cloud-controller-manager -n kube-system
+```
 
 ### Deploying GPU operator on dedicated GPU server
 - On GPU server, install nvidia container toolkit
@@ -143,4 +166,13 @@ helm repo add nvidia https://helm.ngc.nvidia.com/nvidia \
  
 ```
 helm install --wait nvidiagpu      -n gpu-operator --create-namespace     --set toolkit.env[0].name=CONTAINERD_CONFIG     --set toolkit.env[0].value=/var/lib/rancher/k3s/agent/etc/containerd/config.toml     --set toolkit.env[1].name=CONTAINERD_SOCKET     --set toolkit.env[1].value=/run/k3s/containerd/containerd.sock     --set toolkit.env[2].name=CONTAINERD_RUNTIME_CLASS     --set toolkit.env[2].value=nvidia     --set toolkit.env[3].name=CONTAINERD_SET_AS_DEFAULT     --set-string toolkit.env[3].value=true      nvidia/gpu-operator
+```
+
+
+### How to expose TCP services using nginx controller deployed with helm
+- Create nginx-values.yaml file with default config . See reference : https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/values.yaml
+- In TCP section, example : https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/values.yaml#L1184, Add the route
+- run :
+```
+helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --values nginx-values.yaml --namespace ingress-nginx --create-namespace
 ```
