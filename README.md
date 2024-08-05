@@ -33,6 +33,43 @@ Compute, storage and databases can be expensive on cloud platforms such as AWS, 
 - Once done run : `hetzner-k3s create --config cluster_config.yaml`
 - Wait for everything to finish
 
+### Install nginx controller for ingress
+- Run :
+```
+helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace
+```
+- You will notice a public ip is pending for nginx on running : `kubectl get svc -n ingress-nginx`. That's because hetzner need additional configuration for lb to be provisioned (next step)
+- Run following so hetzner can create hetzner loadbalancer:
+```
+kubectl -n ingress-nginx annotate services ingress-nginx-controller \
+  load-balancer.hetzner.cloud/name=nginx-lb \
+  load-balancer.hetzner.cloud/location="nbg1" \
+  load-balancer.hetzner.cloud/use-private-ip="true" \
+  load-balancer.hetzner.cloud/uses-proxyprotocol="true" \
+  load-balancer.hetzner.cloud/hostname="test.com"
+```
+
+### Install certbot manager for automatic ssl certs for nginx ingress
+- Apply hairpin proxy. Cert generation fails without this.
+```
+kubectl apply -f https://raw.githubusercontent.com/compumike/hairpin-proxy/v0.2.1/deploy.yml
+```
+- Run :
+```
+helm repo add jetstack https://charts.jetstack.io --force-update
+```
+&
+```
+helm install \
+  cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --version v1.15.2 \
+  --set crds.enabled=true
+```
+
 ### Setting up k3s cluster on Hetzner GPU dedicated node
 TO BE WRITTEN LATER
 
