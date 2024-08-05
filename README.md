@@ -186,6 +186,16 @@ helm install --wait nvidiagpu      -n gpu-operator --create-namespace     --set 
 
 
 ### How to expose TCP services using nginx controller deployed with helm
+NOTE : the nginx controller must use `use-proxy-pass` as false in order for this to work. This is set in following command. So better create separate nginx controller.
+```
+kubectl -n ingress-nginx annotate services ingress-nginx-controller \
+  load-balancer.hetzner.cloud/name=nginx-lb \
+  load-balancer.hetzner.cloud/location="nbg1" \
+  load-balancer.hetzner.cloud/use-private-ip="true" \
+  load-balancer.hetzner.cloud/uses-proxyprotocol="true" \
+  load-balancer.hetzner.cloud/hostname="test.com"
+```
+<b>Steps:</b>
 - Create nginx-values.yaml file with default config . See reference : https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/values.yaml
 - In TCP section, example : https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/values.yaml#L1184, Add the route
 - run :
