@@ -1,4 +1,4 @@
-# Kubernetes Setup (In Progress)
+# Kubernetes Setup
 Compute, storage and databases can be expensive on cloud platforms such as AWS, Azure etc. The goal of this setup is to allow anyone deploy kubernetes cluster with following features:
 
 #### Index
