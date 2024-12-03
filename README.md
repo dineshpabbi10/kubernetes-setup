@@ -65,6 +65,12 @@ kubectl -n ingress-nginx annotate services ingress-nginx-controller \
   load-balancer.hetzner.cloud/hostname="test.com"
 ```
 
+Also setup ingress configmap by adding :
+```
+  config:
+    use-proxy-protocol: "true"
+```
+
 ### Install certbot manager for automatic ssl certs for nginx ingress
 - Apply hairpin proxy. Cert generation fails without this.
 ```
