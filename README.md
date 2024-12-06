@@ -75,7 +75,7 @@ kubectl -n ingress-nginx annotate services ingress-nginx-controller \
   load-balancer.hetzner.cloud/hostname="test.com"
 ```
 
-Also setup ingress configmap by adding :
+#### Also setup ingress configmap by adding :
 
 Reference: 
 https://docs.digitalocean.com/support/how-do-i-enable-proxy-protocol-when-my-load-balancer-sends-requests-to-the-nginx-ingress-controller/
