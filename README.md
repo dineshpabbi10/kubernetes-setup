@@ -210,6 +210,8 @@ helm install --wait nvidiagpu      -n gpu-operator --create-namespace     --set 
 
 ### How to expose TCP services using nginx controller deployed with helm
 Ref: https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/
+https://medium.com/@suyeshsingh/exposing-tcp-upd-services-via-nginx-ingress-controller-the-helm-way-aca70aeebaba
+
 NOTE : the nginx controller must use `use-proxy-pass` as false in order for this to work. This is set in following command. So better create separate nginx controller.
 ```
 kubectl -n ingress-nginx annotate services ingress-nginx-controller \
@@ -226,6 +228,8 @@ kubectl -n ingress-nginx annotate services ingress-nginx-controller \
 ```
 helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --values nginx-values.yaml --namespace ingress-nginx --create-namespace
 ```
+
+
 
 ### Apply time-slicing for GPU nodes on dedicated gpu cluster
 
