@@ -301,7 +301,7 @@ extraEnv:
     value: all
 ```
 
-Ollama web ui:
+### Ollama web ui:
 Reference : https://artifacthub.io/packages/helm/open-webui/open-webui
 Helm Values:
 
