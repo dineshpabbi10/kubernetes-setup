@@ -12,6 +12,10 @@ Compute, storage and databases can be expensive on cloud platforms such as AWS, 
 - [Deploying GPU operator on dedicated GPU cluster](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#deploying-gpu-operator-on-dedicated-gpu-server)
 - [Expose TCP services on nginx controller](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#how-to-expose-tcp-services-using-nginx-controller-deployed-with-helm)
 - [Apply time-slicing for GPU in dedicated GPU node cluster](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#apply-time-slicing-for-gpu-nodes-on-dedicated-gpu-cluster)
+- [Deploying Ollama](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#deploying-ollama)
+- [Deploying Ollama Web UI](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#ollama-web-ui)
+- [Deploying RabbitMQ Operator](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#rabbit-mq-operator)
+- [Setting up CloudnativePG](https://github.com/dineshpabbi10/kubernetes-setup/blob/main/README.md#cloudnativepg)
 
 #### Features
 - About 70-80% cheaper than AWS
