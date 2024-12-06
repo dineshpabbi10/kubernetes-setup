@@ -27,6 +27,12 @@ Compute, storage and databases can be expensive on cloud platforms such as AWS, 
 - Install k3sup cli : https://github.com/alexellis/k3sup
 - A hetzner cloud project ( Click New Project on hetzner cloud dashboard )
 - A hetzner cloud project token (Read and Write)
+- READ : Hetzner Cloud Control Manager : https://github.com/hetznercloud/hcloud-cloud-controller-manager
+- READ : Hetzner CSI Driver : https://github.com/hetznercloud/csi-driver
+- READ : Hetzner Proxy Protocol : https://docs.hetzner.com/cloud/load-balancers/faq/#what-does-proxy-protocol-mean-and-should-i-enable-it
+- READ : Nginx use proxy protocol : https://docs.nginx.com/nginx/admin-guide/load-balancer/using-proxy-protocol/
+- READ : Why proxy protocol does not work with TCP connections : https://github.com/kubernetes/ingress-nginx/issues/5748
+  
 1.
 ![image](https://github.com/user-attachments/assets/4ee45ae0-97ee-4ce7-8846-9ac07a007ce4)
 
@@ -186,13 +192,14 @@ helm repo add nvidia https://helm.ngc.nvidia.com/nvidia \
     && helm repo update
 ```
 - Install gpu operator with following command
- 
+ Ref : https://medium.com/sparque-labs/serving-ai-models-on-the-edge-using-nvidia-gpu-with-k3s-on-aws-part-4-dd48f8699116
 ```
 helm install --wait nvidiagpu      -n gpu-operator --create-namespace     --set toolkit.env[0].name=CONTAINERD_CONFIG     --set toolkit.env[0].value=/var/lib/rancher/k3s/agent/etc/containerd/config.toml     --set toolkit.env[1].name=CONTAINERD_SOCKET     --set toolkit.env[1].value=/run/k3s/containerd/containerd.sock     --set toolkit.env[2].name=CONTAINERD_RUNTIME_CLASS     --set toolkit.env[2].value=nvidia     --set toolkit.env[3].name=CONTAINERD_SET_AS_DEFAULT     --set-string toolkit.env[3].value=true      nvidia/gpu-operator
 ```
 
 
 ### How to expose TCP services using nginx controller deployed with helm
+Ref: https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/
 NOTE : the nginx controller must use `use-proxy-pass` as false in order for this to work. This is set in following command. So better create separate nginx controller.
 ```
 kubectl -n ingress-nginx annotate services ingress-nginx-controller \
@@ -247,3 +254,202 @@ kubectl patch clusterpolicies.nvidia.com/cluster-policy \
 ```
 
 Once applied, every gpu will publish 4 GPUs instead of one.
+
+### Deploying Ollama
+Reference : https://github.com/otwld/ollama-helm
+Helm Values :
+```yaml
+runtimeClassName: "nvidia"
+
+ollama:
+  gpu:
+    # -- Enable GPU integration
+    enabled: true
+    
+    # -- GPU type: 'nvidia' or 'amd'
+    type: 'nvidia'
+    
+    # -- Specify the number of GPU to 1
+    number: 40
+   
+  # -- List of models to pull at container startup
+  models: 
+    - gemma2:2b
+    - llama3.1:8b
+    - command-r:35b-08-2024-q4_1
+    - command-r:35b-08-2024-q6_K
+    - llava:13b
+    - nomic-embed-text
+    - gemma2:9b-instruct-q8_0
+    - gemma2:27b-instruct-q8_0
+    - llama3.2-vision:11b
+    - llama3.2:3b
+    - gemma2:27b-instruct-q6_K
+    - qwen2.5:32b
+    - mistral-nemo:12b-instruct-2407-q8_0
+    - phi3:14b-medium-128k-instruct-q8_0
+    - phi3:14b-medium-4k-instruct-q8_0
+
+extraEnv:
+  - name: NVIDIA_VISIBLE_DEVICES
+    value: all
+  - name: NVARCH
+    value: x86_64
+  - name: NV_CUDA_CUDART_VERSION
+    value: 12.3.2
+  - name: NVIDIA_DRIVER_CAPABILITIES
+    value: all
+```
+
+Ollama web ui:
+Reference : https://artifacthub.io/packages/helm/open-webui/open-webui
+Helm Values:
+
+```yaml
+nameOverride: ""
+
+ollama:
+  # -- Automatically install Ollama Helm chart from https://otwld.github.io/ollama-helm/. Use [Helm Values](https://github.com/otwld/ollama-helm/#helm-values) to configure
+  enabled: false
+  # -- If enabling embedded Ollama, update fullnameOverride to your desired Ollama name value, or else it will use the default ollama.name value from the Ollama chart
+  fullnameOverride: "open-webui-ollama"
+  # -- Example Ollama configuration with nvidia GPU enabled, automatically downloading a model, and deploying a PVC for model persistence
+  # ollama:
+  #   gpu:
+  #     enabled: true
+  #     type: 'nvidia'
+  #     number: 1
+  #   models:
+  #     - llama3
+  # runtimeClassName: nvidia
+  # persistentVolume:
+  #   enabled: true
+
+pipelines:
+  # -- Automatically install Pipelines chart to extend Open WebUI functionality using Pipelines: https://github.com/open-webui/pipelines
+  enabled: true
+  # -- This section can be used to pass required environment variables to your pipelines (e.g. Langfuse hostname)
+  extraEnvVars: []
+
+# -- A list of Ollama API endpoints. These can be added in lieu of automatically installing the Ollama Helm chart, or in addition to it.
+ollamaUrls: 
+  - <ollama endpoint>
+
+# -- Value of cluster domain
+clusterDomain: cluster.local
+
+annotations: {}
+podAnnotations: {}
+replicaCount: 1
+# -- Open WebUI image tags can be found here: https://github.com/open-webui/open-webui/pkgs/container/open-webui
+image:
+  repository: ghcr.io/open-webui/open-webui
+  tag: "latest"
+  pullPolicy: "IfNotPresent"
+resources: {}
+ingress:
+  enabled: false
+  class: ""
+  # -- Use appropriate annotations for your Ingress controller, e.g., for NGINX:
+  # nginx.ingress.kubernetes.io/rewrite-target: /
+  annotations: {}
+  host: ""
+  tls: false
+  existingSecret: ""
+persistence:
+  enabled: true
+  size: 200Gi
+  # -- Use existingClaim if you want to re-use an existing Open WebUI PVC instead of creating a new one
+  existingClaim: ""
+  # -- If using multiple replicas, you must update accessModes to ReadWriteMany
+  accessModes:
+    - ReadWriteOnce
+  storageClass: ""
+  selector: {}
+  annotations: {}
+
+# -- Node labels for pod assignment.
+nodeSelector: {}
+
+# -- Tolerations for pod assignment
+tolerations: []
+
+# -- Affinity for pod assignment
+affinity: {}
+
+# -- Service values to expose Open WebUI pods to cluster
+service:
+  type: ClusterIP
+  annotations: {}
+  port: 80
+  containerPort: 8080
+  nodePort: ""
+  labels: {}
+  loadBalancerClass: ""
+
+# -- OpenAI base API URL to use. Defaults to the Pipelines service endpoint when Pipelines are enabled, and "https://api.openai.com/v1" if Pipelines are not enabled and this value is blank
+openaiBaseApiUrl: ""
+
+# -- Additional environments variables on the output Deployment definition. Most up-to-date environment variables can be found here: https://docs.openwebui.com/getting-started/env-configuration/
+extraEnvVars:
+  # -- Default API key value for Pipelines. Should be updated in a production deployment, or be changed to the required API key if not using Pipelines
+  - name: OPENAI_API_KEY
+    value: "0p3n-w3bu!"
+  # valueFrom:
+  #   secretKeyRef:
+  #     name: pipelines-api-key
+  #     key: api-key
+  # - name: OPENAI_API_KEY
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: openai-api-key
+  #       key: api-key
+  # - name: OLLAMA_DEBUG
+  #   value: "1"
+
+# -- Configure pod security context
+# ref: <https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-containe>
+podSecurityContext:
+  {}
+  # fsGroupChangePolicy: Always
+  # sysctls: []
+  # supplementalGroups: []
+  # fsGroup: 1001
+
+# -- Configure container security context
+# ref: <https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-containe>
+containerSecurityContext:
+  {}
+  # runAsUser: 1001
+  # runAsGroup: 1001
+  # runAsNonRoot: true
+  # privileged: false
+  # allowPrivilegeEscalation: false
+  # readOnlyRootFilesystem: false
+  # capabilities:
+  #   drop:
+  #     - ALL
+  # seccompProfile:
+  #   type: "RuntimeDefault"
+```
+
+### Rabbit MQ Operator
+
+#### Installation 
+https://www.rabbitmq.com/kubernetes/operator/install-operator
+
+#### Creating Rabbitmq clusters
+https://www.rabbitmq.com/kubernetes/operator/using-operator#replicas
+
+### CloudNativePG
+
+#### Installation
+https://cloudnative-pg.io/documentation/1.24/installation_upgrade/
+
+#### Configuring Clusters
+https://cloudnative-pg.io/documentation/1.24/quickstart/#part-3-deploy-a-postgresql-cluster
+
+#### Setting Up Real Time Backups
+1. https://cloudnative-pg.io/documentation/1.24/backup_barmanobjectstore/
+2. Create Backup Schedule Resource : https://cloudnative-pg.io/documentation/1.24/backup/#scheduled-backups
+
