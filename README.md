@@ -76,7 +76,9 @@ kubectl -n ingress-nginx annotate services ingress-nginx-controller \
 ```
 
 Also setup ingress configmap by adding :
-Reference: https://docs.digitalocean.com/support/how-do-i-enable-proxy-protocol-when-my-load-balancer-sends-requests-to-the-nginx-ingress-controller/
+
+Reference: 
+https://docs.digitalocean.com/support/how-do-i-enable-proxy-protocol-when-my-load-balancer-sends-requests-to-the-nginx-ingress-controller/
 
 When nginx is deploying, it also creates a config map. You can find it using : `kubectl get config -n ingress-nginx`. Once you get the configmap name, edit it using `kubectl edit configmap <config name> -n ingress-nginx` and add following section:
 
